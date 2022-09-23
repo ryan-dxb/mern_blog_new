@@ -20,4 +20,12 @@ const userRegisterCtrl = expressAsyncHandler(async (req, res) => {
   }
 });
 
-module.exports = { userRegisterCtrl };
+const userLoginCtrl = expressAsyncHandler(async (req, res) => {
+  const user = await User.findOne({ email: req?.body?.email });
+
+  if (!user) throw new Error(`Login Failed. Credentials Invalid`);
+
+  res.json("user login");
+});
+
+module.exports = { userRegisterCtrl, userLoginCtrl };
