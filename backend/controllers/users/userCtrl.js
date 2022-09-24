@@ -80,10 +80,25 @@ const singleUserCtrl = expressAsyncHandler(async (req, res) => {
   }
 });
 
+const userProfileCtrl = expressAsyncHandler(async (req, res) => {
+  const { id } = req?.params;
+
+  if (!id) throw new Error("Please Provide User ID");
+  validateMongoDbId(id);
+
+  try {
+    const singleUser = await User.findById(id);
+    res.json(singleUser);
+  } catch (error) {
+    res.json(error);
+  }
+});
+
 module.exports = {
   userRegisterCtrl,
   userLoginCtrl,
   allUsersCtrl,
   deleteUserCtrl,
   singleUserCtrl,
+  userProfileCtrl,
 };
