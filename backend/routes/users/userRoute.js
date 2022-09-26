@@ -8,6 +8,14 @@ const {
   userProfileCtrl,
   updateProfileCtrl,
   updatePasswordCtrl,
+  followingUserCtrl,
+  unFollowingUserCtrl,
+  blockUserCtrl,
+  unBlockUserCtrl,
+  generateVerificationTokenCtrl,
+  accountVerificationCtrl,
+  forgetPasswordTokenCtrl,
+  passwordResetCtrl,
 } = require("../../controllers/users/userCtrl");
 const authMiddleware = require("../../middlewares/auth/authMiddleware");
 
@@ -22,5 +30,22 @@ userRoutes.get("/:id", singleUserCtrl);
 userRoutes.get("/profile/:id", authMiddleware, userProfileCtrl);
 userRoutes.put("/profile/:id", authMiddleware, updateProfileCtrl);
 userRoutes.put("/profile/password/:id/", authMiddleware, updatePasswordCtrl);
+
+userRoutes.put("/follow", authMiddleware, followingUserCtrl);
+userRoutes.put("/unfollow", authMiddleware, unFollowingUserCtrl);
+
+userRoutes.put("/block-user/:id", authMiddleware, blockUserCtrl);
+userRoutes.put("/unblock-user/:id", authMiddleware, unBlockUserCtrl);
+
+userRoutes.post(
+  "/generate-verify-email-token",
+  authMiddleware,
+  generateVerificationTokenCtrl
+);
+
+userRoutes.post("/verify-account", authMiddleware, accountVerificationCtrl);
+
+userRoutes.post("/forget-password-token", forgetPasswordTokenCtrl);
+userRoutes.post("/reset-password", passwordResetCtrl);
 
 module.exports = userRoutes;
