@@ -94,6 +94,49 @@ const userProfileCtrl = expressAsyncHandler(async (req, res) => {
   }
 });
 
+const updateProfileCtrl = expressAsyncHandler(async (req, res) => {
+  const { id } = req?.user;
+
+  if (!id) throw new Error("Please Provide User ID");
+  validateMongoDbId(id);
+
+  const user = await User.findByIdAndUpdate(
+    id,
+    {
+      firstName: req?.body?.firstName,
+      lastName: req?.body?.lastName,
+      email: req?.body?.email,
+      bio: req?.body?.bio,
+    },
+    {
+      new: true,
+      runValidators: true,
+    }
+  );
+
+  res.json(user);
+});
+
+const updatePasswordCtrl = expressAsyncHandler(async (req, res) => {
+  const { id } = req?.user;
+  const { password } = req?.body;
+
+  if (!id) throw new Error("Please Provide User ID");
+  validateMongoDbId(id);
+
+  const user = await User.findById(id);
+
+  if (password) {
+    user.password = password;
+
+    const updatedUser = await user.save();
+
+    res.json(updatedUser);
+  }
+
+  return res.json({ message: "Something went wrong" });
+});
+
 module.exports = {
   userRegisterCtrl,
   userLoginCtrl,
@@ -101,4 +144,6 @@ module.exports = {
   deleteUserCtrl,
   singleUserCtrl,
   userProfileCtrl,
+  updateProfileCtrl,
+  updatePasswordCtrl,
 };

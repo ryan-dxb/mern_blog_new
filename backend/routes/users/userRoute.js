@@ -6,6 +6,8 @@ const {
   deleteUserCtrl,
   singleUserCtrl,
   userProfileCtrl,
+  updateProfileCtrl,
+  updatePasswordCtrl,
 } = require("../../controllers/users/userCtrl");
 const authMiddleware = require("../../middlewares/auth/authMiddleware");
 
@@ -18,5 +20,7 @@ userRoutes.delete("/:id", deleteUserCtrl);
 userRoutes.get("/:id", singleUserCtrl);
 
 userRoutes.get("/profile/:id", authMiddleware, userProfileCtrl);
+userRoutes.put("/profile/:id", authMiddleware, updateProfileCtrl);
+userRoutes.put("/profile/password/:id/", authMiddleware, updatePasswordCtrl);
 
 module.exports = userRoutes;
