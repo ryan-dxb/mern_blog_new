@@ -5,6 +5,7 @@ const validateMongoDbId = require("../../utils/validateMongoDbId");
 const crypto = require("crypto");
 
 const sgMail = require("@sendgrid/mail");
+const cloudinaryUploadImage = require("../../utils/cloudinary");
 
 sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 
@@ -389,6 +390,29 @@ const passwordResetCtrl = expressAsyncHandler(async (req, res) => {
   res.json({ user: userFound });
 });
 
+// Profile Photo Upload
+const profilePhotoUploadCtrl = expressAsyncHandler(async (req, res) => {
+  const loggedInUserId = req?.user.id;
+
+  const localPath = `public/images/users/profile/${req.file.filename}`;
+
+  const imgUploaded = await cloudinaryUploadImage(localPath);
+
+  const loggedInUser = await User.findByIdAndUpdate(
+    loggedInUserId,
+    {
+      profilePhoto: imgUploaded?.url,
+    },
+    {
+      new: true,
+    }
+  );
+
+  res.json({
+    user: loggedInUser,
+  });
+});
+
 module.exports = {
   userRegisterCtrl,
   userLoginCtrl,
@@ -406,4 +430,5 @@ module.exports = {
   accountVerificationCtrl,
   forgetPasswordTokenCtrl,
   passwordResetCtrl,
+  profilePhotoUploadCtrl,
 };
