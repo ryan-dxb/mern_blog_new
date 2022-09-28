@@ -161,6 +161,13 @@ userSchema.methods.createPasswordResetToken = async function () {
   return resetToken;
 };
 
+// Virtual Method To Populate created Posts
+userSchema.virtual("userPosts", {
+  ref: "Post", //Name of the Model to reference
+  foreignField: "user", // reference from Post Model
+  localField: "_id",
+});
+
 const User = mongoose.model("User", userSchema);
 
 module.exports = User;

@@ -3,6 +3,7 @@ const expressAsyncHandler = require("express-async-handler");
 const generateToken = require("../../config/token/generateToken");
 const validateMongoDbId = require("../../utils/validateMongoDbId");
 const crypto = require("crypto");
+const fs = require("fs");
 
 const sgMail = require("@sendgrid/mail");
 const cloudinaryUploadImage = require("../../utils/cloudinary");
@@ -93,8 +94,8 @@ const userProfileCtrl = expressAsyncHandler(async (req, res) => {
   validateMongoDbId(id);
 
   try {
-    const singleUser = await User.findById(id);
-    res.json(singleUser);
+    const myProfile = await User.findById(id).populate("userPosts");
+    res.json(myProfile);
   } catch (error) {
     res.json(error);
   }
@@ -407,6 +408,8 @@ const profilePhotoUploadCtrl = expressAsyncHandler(async (req, res) => {
       new: true,
     }
   );
+
+  fs.unlinkSync(localPath);
 
   res.json({
     user: loggedInUser,
